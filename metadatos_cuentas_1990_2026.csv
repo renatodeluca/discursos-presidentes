@@ -1,0 +1,38 @@
+archivo,anio,fecha,presidente,nombre,gobierno,coalicion,sector,n_cuenta_mandato,primera_cuenta,palabras
+1990 Aylwin.txt,1990,1990-05-21,Aylwin,Patricio Aylwin,Aylwin,Concertación,Centroizquierda,1,sí,21178
+1991 Aylwin.txt,1991,1991-05-21,Aylwin,Patricio Aylwin,Aylwin,Concertación,Centroizquierda,2,no,12537
+1992 Aylwin.txt,1992,1992-05-21,Aylwin,Patricio Aylwin,Aylwin,Concertación,Centroizquierda,3,no,18468
+1993 Aylwin.txt,1993,1993-05-21,Aylwin,Patricio Aylwin,Aylwin,Concertación,Centroizquierda,4,no,23998
+1994 Frei.txt,1994,1994-05-21,Frei,Eduardo Frei Ruiz-Tagle,Frei,Concertación,Centroizquierda,1,sí,16378
+1995 Frei.txt,1995,1995-05-21,Frei,Eduardo Frei Ruiz-Tagle,Frei,Concertación,Centroizquierda,2,no,12608
+1996 Frei.txt,1996,1996-05-21,Frei,Eduardo Frei Ruiz-Tagle,Frei,Concertación,Centroizquierda,3,no,16773
+1997 Frei.txt,1997,1997-05-21,Frei,Eduardo Frei Ruiz-Tagle,Frei,Concertación,Centroizquierda,4,no,29226
+1998 Frei.txt,1998,1998-05-21,Frei,Eduardo Frei Ruiz-Tagle,Frei,Concertación,Centroizquierda,5,no,10476
+1999 Frei.txt,1999,1999-05-21,Frei,Eduardo Frei Ruiz-Tagle,Frei,Concertación,Centroizquierda,6,no,20284
+2000 Lagos.txt,2000,2000-05-21,Lagos,Ricardo Lagos,Lagos,Concertación,Centroizquierda,1,sí,10311
+2001 Lagos.txt,2001,2001-05-21,Lagos,Ricardo Lagos,Lagos,Concertación,Centroizquierda,2,no,8894
+2002 Lagos.txt,2002,2002-05-21,Lagos,Ricardo Lagos,Lagos,Concertación,Centroizquierda,3,no,12290
+2003 Lagos.txt,2003,2003-05-21,Lagos,Ricardo Lagos,Lagos,Concertación,Centroizquierda,4,no,10477
+2004 Lagos.txt,2004,2004-05-21,Lagos,Ricardo Lagos,Lagos,Concertación,Centroizquierda,5,no,11948
+2005 Lagos.txt,2005,2005-05-21,Lagos,Ricardo Lagos,Lagos,Concertación,Centroizquierda,6,no,10033
+2006 Bachelet.txt,2006,2006-05-21,Bachelet,Michelle Bachelet,Bachelet I,Concertación,Centroizquierda,1,sí,11243
+2007 Bachelet.txt,2007,2007-05-21,Bachelet,Michelle Bachelet,Bachelet I,Concertación,Centroizquierda,2,no,15493
+2008 Bachelet.txt,2008,2008-05-21,Bachelet,Michelle Bachelet,Bachelet I,Concertación,Centroizquierda,3,no,20690
+2009 Bachelet.txt,2009,2009-05-21,Bachelet,Michelle Bachelet,Bachelet I,Concertación,Centroizquierda,4,no,15360
+2010 Piñera.txt,2010,2010-05-21,Piñera,Sebastián Piñera,Piñera I,Coalición por el Cambio,Derecha,1,sí,17017
+2011 Piñera.txt,2011,2011-05-21,Piñera,Sebastián Piñera,Piñera I,Coalición por el Cambio,Derecha,2,no,14320
+2012 Piñera.txt,2012,2012-05-21,Piñera,Sebastián Piñera,Piñera I,Coalición por el Cambio,Derecha,3,no,18151
+2013 Piñera.txt,2013,2013-05-21,Piñera,Sebastián Piñera,Piñera I,Coalición por el Cambio,Derecha,4,no,14010
+2014 Bachelet.txt,2014,2014-05-21,Bachelet,Michelle Bachelet,Bachelet II,Nueva Mayoría,Centroizquierda,1,sí,19421
+2015 Bachelet.txt,2015,2015-05-21,Bachelet,Michelle Bachelet,Bachelet II,Nueva Mayoría,Centroizquierda,2,no,16526
+2016 Bachelet.txt,2016,2016-05-21,Bachelet,Michelle Bachelet,Bachelet II,Nueva Mayoría,Centroizquierda,3,no,13381
+2017 Bachelet.txt,2017,2017-06-01,Bachelet,Michelle Bachelet,Bachelet II,Nueva Mayoría,Centroizquierda,4,no,17747
+2018 Piñera.txt,2018,2018-06-01,Piñera,Sebastián Piñera,Piñera II,Chile Vamos,Derecha,1,sí,15282
+2019 Piñera.txt,2019,2019-06-01,Piñera,Sebastián Piñera,Piñera II,Chile Vamos,Derecha,2,no,10982
+2020 Piñera.txt,2020,2020-07-31,Piñera,Sebastián Piñera,Piñera II,Chile Vamos,Derecha,3,no,11182
+2021 Piñera.txt,2021,2021-06-01,Piñera,Sebastián Piñera,Piñera II,Chile Vamos,Derecha,4,no,9987
+2022 Boric.txt,2022,2022-06-01,Boric,Gabriel Boric,Boric,Apruebo Dignidad y Socialismo Democrático,Izquierda,1,sí,17349
+2023 Boric.txt,2023,2023-06-01,Boric,Gabriel Boric,Boric,Apruebo Dignidad y Socialismo Democrático,Izquierda,2,no,26928
+2024 Boric.txt,2024,2024-06-01,Boric,Gabriel Boric,Boric,Apruebo Dignidad y Socialismo Democrático,Izquierda,3,no,22088
+2025 Boric.txt,2025,2025-06-01,Boric,Gabriel Boric,Boric,Apruebo Dignidad y Socialismo Democrático,Izquierda,4,no,18103
+2026 Kast.txt,2026,2026-06-01,Kast,José Antonio Kast,Kast,Partido Republicano y aliados,Derecha radical,1,sí,19771
