@@ -1,0 +1,18 @@
+---
+title: "Análisis computacional de texto"
+author:
+  - name: Renato De Luca 
+  - name: Elena Yañez
+date: today
+lang: "es"
+fontsize: 13pt
+format:
+  pdf:
+    toc: true
+    number-sections: true
+    geometry: margin=2.5cm
+    pdf-engine: xelatex
+    mainfont: "Times New Roman"
+    keep-tex: false
+
+---
