@@ -9,9 +9,11 @@ pacman::p_load(
   quanteda.textstats  # textplot_network(): dibujar redes de palabras
 )
 
-slda_allende_pinochet <- readRDS("slda_allende_pinochet")
-slda_1990_2026 <- readRDS("slda_1990_2026.rds")
+# cargar matrices con los datos
+slda_allende_pinochet <- readRDS("data/slda_allende_pinochet")
+slda_1990_2026 <- readRDS("data/slda_1990_2026.rds")
 
-dtm_1990_2026 <- readRDS("dtm_1990_2026.rds")
-dtm_allende_pinochet <- readRDS("dtm_allende_pinochet.rds")
+# cargar modelos
+dtm_1990_2026 <- readRDS("data/dtm_1990_2026.rds")
+dtm_allende_pinochet <- readRDS("data/dtm_allende_pinochet.rds")
 
