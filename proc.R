@@ -73,6 +73,7 @@ dtm_allende_pinochet <- dfm_trim(dtm_allende_pinochet, min_termfreq = 5)   # pal
 dtm_allende_pinochet                                      # unos 11.150 párrafos x 7.200 palabras
 topfeatures(dtm_allende_pinochet, 30)
 
+
 ## 2.2 Cuentas públicas 1990-2026
 corp_1990_2026 <- corpus(cuentas)
 docnames(corp_1990_2026) <- paste(corp_1990_2026$gobierno, corp_1990_2026$anio, sep = "_")
@@ -102,6 +103,11 @@ dtm_1990_2026 <- dfm(toks_1990_2026_sin)
 dtm_1990_2026 <- dfm_trim(dtm_1990_2026, min_termfreq = 5)   # palabras que aparecen 5 o más veces
 dtm_1990_2026                                      # unos 11.150 párrafos x 7.200 palabras
 topfeatures(dtm_1990_2026, 30)
+saveRDS(dtm_1990_2026, "dtm_1990_2026.rds") 
+saveRDS(dtm_allende_pinochet, "dtm_allende_pinochet.rds") 
+
+
+# ---- PASO 3 · Elegir la pregunta y su diccionario de semillas ----------
 
 # A. ¿Volvió el lenguaje de Allende?  (el mismo diccionario de las sesiones 9 y 10)
 dic_A <- dictionary(list(
@@ -128,14 +134,26 @@ for (m in marcos) {
 }
 semillas <- featnames(dfm_select(dtm_1990_2026, pattern = dic))
 
+for (m in marcos) {
+  cat("\n", m, "\n")
+  print(sort(colSums(dfm_select(dtm_allende_pinochet, pattern = dic[m])), decreasing = TRUE))
+}
+semillas <- featnames(dfm_select(dtm_allende_pinochet, pattern = dic))
 
 # ---- PASO 4 · Estimar el modelo de tópicos semillado --------------------
 # residual = 15: además de sus tópicos sembrados, 15 tópicos libres para todo
 # lo demás (salud, vivienda, política exterior...). Con pocos tópicos libres,
 # los sembrados se "tragan" palabras ajenas. Tarda alrededor de 1 minuto.
 set.seed(2026)                                   # >>> puede cambiarla en el Paso 7d
-slda <- textmodel_seededlda(dtm_1990_2026, dictionary = dic, residual = 15)
-saveRDS(slda, "slda_taller3.rds")   # guárdelo: lo necesitarán para reproducir sus cifras
+slda_allende_pinochet <- textmodel_seededlda(dtm_allende_pinochet, dictionary = dic, residual = 15)
+saveRDS(slda_allende_pinochet, "slda_allende_pinochet.rds")   # guárdelo: lo necesitarán para reproducir sus cifras
 # Para volver a cargarlo otro día sin estimarlo de nuevo:
 # slda <- readRDS("slda_taller3.rds")
-terms(slda, 15)[, marcos]     # las 15 palabras más probables de sus tópicos
+terms(slda_allende_pinochet, 15)[, marcos]     # las 15 palabras más probables de sus tópicos
+
+## ---- 4.2 Cuentas publicas 1990-2026
+set.seed(2026)                                   # >>> puede cambiarla en el Paso 7d
+slda_1990_2026 <- textmodel_seededlda(dtm_1990_2026, dictionary = dic, residual = 15)
+# Para volver a cargarlo otro día sin estimarlo de nuevo:
+# slda <- readRDS("slda_taller3.rds")
+terms(slda_1990_2026, 15)[, marcos]     # las 15 palabras más probables de sus tópicos
