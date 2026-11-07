@@ -16,3 +16,21 @@ format:
     keep-tex: false
 
 ---
+
+# Parte 1 · Pregunta, hipótesis y semillas (6 pts). Una hipótesis de una o dos frases, anclada en al menos un hecho del período y en al menos una lectura del curso. El diccionario usado, con cada cambio justificado. Extensión: media página.
+
+- Hipótesis 1: A partir de la vuelta a la democracia, el lenguaje de las cuentas públicas de los presidemtes se asimilan a las de Allende.
+- Hipótesis 2: La excepción a este giro discursivo es con el presidente Kast.
+
+Parte 2 · Medición integrada (10 pts). Las 15 palabras más probables de sus tópicos sembrados, separando semillas de palabras descubiertas, y si cada tópico confirma, amplía o desmiente el concepto. Un gráfico por año, una tabla por gobierno y la comparación con las primeras cuentas de cada mandato. Extensión: página y media.
+Parte 3 · Validación (10 pts).
+
+    (a) Lean los 5 párrafos más típicos de un tópico.
+    (b) Codifiquen a mano los 20 párrafos que exporta el guion (1 = sí, 0 = no, 9 = duda) y calculen la precisión.
+    (c) Incluyan un kwic() de una palabra ambigua.
+    (d) Hagan una prueba de robustez: cambien una sola decisión y digan si se mantiene el orden de los gobiernos.
+    Extensión: una página.
+
+Parte 4 · Coocurrencias (6 pts). Una palabra clave en dos gobiernos: tabla de vecinos y dos redes (paso 8), con una interpretación de cómo cambia su sentido. También vale un mapa equivalente hecho en VOSviewer. Extensión: media página.
+Parte 5 · Interpretación, límites y ética (8 pts). Respondan la pregunta separando lo que los datos muestran de lo que no permiten concluir. Discutan al menos dos límites del corpus y una consideración ética. Extensión: media página a una.
+Anexo (obligatorio, sin puntaje): salida de sessionInfo(), diccionario final completo, semilla y valor de residual.
