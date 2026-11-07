@@ -9,6 +9,8 @@ pacman::p_load(
   quanteda.textstats  # textplot_network(): dibujar redes de palabras
 )
 
+dir.create("data", showWarnings = FALSE)
+
 # ---- PASO 1 · Leer las cuentas y sus metadatos --------------------------
 
 
@@ -27,7 +29,7 @@ corp_par_allende_pinochet<- corpus(mensajes)
 docnames(corp_par_allende_pinochet) <- paste(corp_par_allende_pinochet$presidente, corp_par_allende_pinochet$anio, sep = "_")
 corp_par_allende_pinochet <- corpus_reshape(corp_par_allende_pinochet, to = "paragraphs")                 # un documento por párrafo
 corp_par_allende_pinochet <- corpus_subset(corp_par_allende_pinochet, ntoken(tokens(corp_par_allende_pinochet)) >= 10) # fuera los párrafos de < 10 palabras
-corp_par_allende_pinochet <- corpus_subset(corp_par_allende_pinochet, grepl("[a-záéíóúñ]", corp_par_allende_pinochet)) # fuera los títulos en mayúsculas
+corp_par_allende_pinochet <- corpus_subset(corp_par_allende_pinochet, grepl("[a-záéíóúñ]", as.character(corp_par_allende_pinochet))) # fuera los títulos en mayúsculas
 
 ## ---- 1.2 Cuentas públicas 1990-2026 ----
 # Leer archivos
@@ -51,16 +53,20 @@ orden_gob <- c("Aylwin", "Frei", "Lagos", "Bachelet I", "Piñera I",
 # ---- PASO 2 · Párrafos y matriz documento-término ----------------------
 # La unidad de análisis es el PÁRRAFO, como en lo vimos en clases (Unidad V).
 
-## Discursos Allende-Pinochet
-
 # Expresiones de varias palabras que tratamos como una sola (AGREGAR!!!!)
+# Se define una sola vez y sirve para los dos corpus. Se agregaron las
+# semillas de varias palabras de dic_A (si no, quedan con 0 apariciones).
 compuestos <- c("derechos humanos", "crimen organizado", "fuerzas armadas",
                 "seguridad social", "seguridad pública", "seguridad ciudadana",
                 "derechos sociales", "clase media", "medio ambiente",
                 "cambio climático", "crisis climática", "pueblos originarios",
                 "pueblos indígenas", "estallido social", "estado de derecho",
                 "orden público", "detenidos desaparecidos", "protección social",
-                "crecimiento económico", "nueva constitución", "libre mercado")
+                "crecimiento económico", "nueva constitución", "libre mercado",
+                "unidad popular", "gobierno popular", "junta de gobierno",
+                "área de propiedad social")
+
+## Discursos Allende-Pinochet
 
 toks_allende_pinochet <- tokens(corp_par_allende_pinochet, remove_punct = TRUE, remove_numbers = TRUE,
                remove_symbols = TRUE) |>
@@ -70,7 +76,8 @@ toks_allende_pinochet_sin <- tokens_remove(toks_allende_pinochet, stopwords("es"
 
 dtm_allende_pinochet <- dfm(toks_allende_pinochet_sin)
 dtm_allende_pinochet <- dfm_trim(dtm_allende_pinochet, min_termfreq = 5)   # palabras que aparecen 5 o más veces
-dtm_allende_pinochet                                      # unos 11.150 párrafos x 7.200 palabras
+dtm_allende_pinochet <- dfm_subset(dtm_allende_pinochet, ntoken(dtm_allende_pinochet) > 0)  # fuera párrafos que quedaron vacíos
+dtm_allende_pinochet
 topfeatures(dtm_allende_pinochet, 30)
 
 
@@ -79,19 +86,9 @@ corp_1990_2026 <- corpus(cuentas)
 docnames(corp_1990_2026) <- paste(corp_1990_2026$gobierno, corp_1990_2026$anio, sep = "_")
 corp_par_1990_2026 <- corpus_reshape(corp_1990_2026, to = "paragraphs")
 corp_par_1990_2026 <- corpus_subset(corp_par_1990_2026, ntoken(tokens(corp_par_1990_2026)) >= 10)  # fuera párrafos < 10 palabras
-corp_par_1990_2026 <- corpus_subset(corp_par_1990_2026, grepl("[a-záéíóúñ]", corp_par_1990_2026))  # fuera títulos en mayúsculas
-ndoc(corp_par_1990_2026)                                      # unos 11.150 párrafos
+corp_par_1990_2026 <- corpus_subset(corp_par_1990_2026, grepl("[a-záéíóúñ]", as.character(corp_par_1990_2026)))  # fuera títulos en mayúsculas
+ndoc(corp_par_1990_2026)
 table(factor(corp_par_1990_2026$gobierno, levels = orden_gob))  # ¡ojo! Kast tiene muy pocos (una sola cuenta)
-texto <- as.character(corp_par_1990_2026)                     # el texto de cada párrafo, para leer
-
-# Expresiones de varias palabras que tratamos como una sola (AGREGAR!!!!)
-compuestos <- c("derechos humanos", "crimen organizado", "fuerzas armadas",
-                "seguridad social", "seguridad pública", "seguridad ciudadana",
-                "derechos sociales", "clase media", "medio ambiente",
-                "cambio climático", "crisis climática", "pueblos originarios",
-                "pueblos indígenas", "estallido social", "estado de derecho",
-                "orden público", "detenidos desaparecidos", "protección social",
-                "crecimiento económico", "nueva constitución", "libre mercado")
 
 toks_1990_2026 <- tokens(corp_par_1990_2026, remove_punct = TRUE, remove_numbers = TRUE,
                remove_symbols = TRUE) |>
@@ -101,10 +98,16 @@ toks_1990_2026_sin <- tokens_remove(toks_1990_2026, stopwords("es"))
 
 dtm_1990_2026 <- dfm(toks_1990_2026_sin)
 dtm_1990_2026 <- dfm_trim(dtm_1990_2026, min_termfreq = 5)   # palabras que aparecen 5 o más veces
-dtm_1990_2026                                      # unos 11.150 párrafos x 7.200 palabras
+dtm_1990_2026 <- dfm_subset(dtm_1990_2026, ntoken(dtm_1990_2026) > 0)  # fuera párrafos que quedaron vacíos
+dtm_1990_2026
 topfeatures(dtm_1990_2026, 30)
+
+texto <- as.character(corp_par_1990_2026)[docnames(dtm_1990_2026)]   # el texto de cada párrafo, para leer (alineado con la matriz)
+
 saveRDS(dtm_1990_2026, "data/dtm_1990_2026.rds") 
 saveRDS(dtm_allende_pinochet, "data/dtm_allende_pinochet.rds") 
+saveRDS(toks_1990_2026_sin, "data/toks_1990_2026_sin.rds")   # para el kwic y las redes
+saveRDS(corp_par_1990_2026, "data/corp_par_1990_2026.rds")
 
 
 # ---- PASO 3 · Elegir la pregunta y su diccionario de semillas ----------
@@ -132,13 +135,13 @@ for (m in marcos) {
   cat("\n", m, "\n")
   print(sort(colSums(dfm_select(dtm_1990_2026, pattern = dic[m])), decreasing = TRUE))
 }
-semillas <- featnames(dfm_select(dtm_1990_2026, pattern = dic))
+semillas_cuentas <- featnames(dfm_select(dtm_1990_2026, pattern = dic))
 
 for (m in marcos) {
   cat("\n", m, "\n")
   print(sort(colSums(dfm_select(dtm_allende_pinochet, pattern = dic[m])), decreasing = TRUE))
 }
-semillas <- featnames(dfm_select(dtm_allende_pinochet, pattern = dic))
+semillas_ap <- featnames(dfm_select(dtm_allende_pinochet, pattern = dic))
 
 # ---- PASO 4 · Estimar el modelo de tópicos semillado --------------------
 # residual = 15: además de sus tópicos sembrados, 15 tópicos libres para todo
@@ -148,7 +151,7 @@ set.seed(2026)                                   # >>> puede cambiarla en el Pas
 slda_allende_pinochet <- textmodel_seededlda(dtm_allende_pinochet, dictionary = dic, residual = 15)
 saveRDS(slda_allende_pinochet, "data/slda_allende_pinochet.rds")   # guárdelo: lo necesitarán para reproducir sus cifras
 # Para volver a cargarlo otro día sin estimarlo de nuevo:
-# slda <- readRDS("slda_taller3.rds")
+# slda_allende_pinochet <- readRDS("data/slda_allende_pinochet.rds")
 terms(slda_allende_pinochet, 15)[, marcos]     # las 15 palabras más probables de sus tópicos
 
 ## ---- 4.2 Cuentas publicas 1990-2026
@@ -156,5 +159,18 @@ set.seed(2026)                                   # >>> puede cambiarla en el Pas
 slda_1990_2026 <- textmodel_seededlda(dtm_1990_2026, dictionary = dic, residual = 15)
 saveRDS(slda_1990_2026, "data/slda_1990_2026.rds")   # guárdelo: lo necesitarán para reproducir sus cifras
 # Para volver a cargarlo otro día sin estimarlo de nuevo:
-# slda <- readRDS("slda_taller3.rds")
+# slda_1990_2026 <- readRDS("data/slda_1990_2026.rds")
 terms(slda_1990_2026, 15)[, marcos]     # las 15 palabras más probables de sus tópicos
+
+## ---- 4.3 Tópicos de Allende-Pinochet aplicados a las cuentas 1990-2026
+# El modelo aprendido en Allende-Pinochet se proyecta sobre las cuentas.
+dtm_cuentas_match <- dfm_match(dtm_1990_2026, featnames(dtm_allende_pinochet))
+dtm_cuentas_match <- dfm_subset(dtm_cuentas_match, ntoken(dtm_cuentas_match) > 0)
+set.seed(2026)
+pred_cuentas <- textmodel_lda(
+  dtm_cuentas_match,
+  model = slda_allende_pinochet,
+  update_model = FALSE
+)$theta
+saveRDS(pred_cuentas, "data/pred_cuentas_desde_AP.rds")
+head(pred_cuentas[, marcos])
