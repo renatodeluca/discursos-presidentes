@@ -183,7 +183,15 @@ for (m in marcos) {
   cat("Spearman:", round(cor(tab_gob[[m]], tab_rob[[m]], method = "spearman"), 3), "\n")
 }
  
- 
+ ## ---- 6.5 Precisión de la codificación manual ----
+for (arch in c("validacion_20_codificada.csv", "validacion_20_orden_codificada.csv")) {
+  v <- read.csv(arch, encoding = "UTF-8")
+  cat("\n", arch, "\n")
+  print(table(v$codigo))
+  cat("Precisión:", round(sum(v$codigo == 1) / sum(v$codigo %in% c(0, 1)), 3), "\n")
+}
+
+
 # ---- PASO 7 · Coocurrencias (Parte 4) ----------------------------------
 palabra <- "seguridad"     # >>> CAMBIAR AQUÍ <<< la palabra clave
 gov1 <- "Aylwin"           # >>> CAMBIAR AQUÍ <<< los dos gobiernos a comparar
