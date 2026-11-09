@@ -8,7 +8,9 @@ pacman::p_load(
   quanteda.textplots,  # textplot_network(): dibujar redes de palabras
   quanteda.textstats,  # textplot_network(): dibujar redes de palabras
   ggplot2,  # gráficos
-  tidyr     # pivot_longer()
+  tidyr,     # pivot_longer()
+  knitr,
+  kableExtra
 )
  
 # cargar matrices con los datos
@@ -25,7 +27,8 @@ corp_par_1990_2026 <- readRDS("data/corp_par_1990_2026.rds")
 pred_cuentas <- readRDS("data/pred_cuentas_desde_AP.rds")   # tópicos de Allende-Pinochet proyectados sobre las cuentas
  
 dir.create("figuras", showWarnings = FALSE)
- 
+dir.create("tablas", showWarnings = FALSE)
+
 # El orden de los gobiernos (para que las tablas y gráficos salgan en orden histórico)
 orden_gob <- c("Aylwin", "Frei", "Lagos", "Bachelet I", "Piñera I",
                "Bachelet II", "Piñera II", "Boric", "Kast")
@@ -50,20 +53,29 @@ marcos <- names(dic)
 ## ---- 5.1 Las 15 palabras más probables: semillas vs. descubiertas ----
 # "semilla" = la palabra calza con el diccionario de ese tópico;
 # "descubierta" = el modelo la asoció al tópico sin que estuviera en el diccionario.
+pal_prob_ap <- data.frame(row.names = 1:15)
+
 for (m in marcos) {
-  cat("\n", m, "- Allende-Pinochet\n")
   pal <- terms(slda_allende_pinochet, 15)[, m]
   sem <- featnames(dfm_select(dtm_allende_pinochet, pattern = dic[m]))
-  print(data.frame(palabra = pal, tipo = ifelse(pal %in% sem, "semilla", "descubierta")))
+  
+  pal_prob_ap[[paste0(m, "_palabra")]] <- pal
+  pal_prob_ap[[paste0(m, "_tipo")]]    <- ifelse(pal %in% sem, "semilla", "descubierta")
 }
- 
+
+saveRDS(pal_prob_ap, file = "tablas/pal_prob_ap.rds")
+
+pal_prob_90_26 <- data.frame(row.names = 1:15)
+
 for (m in marcos) {
-  cat("\n", m, "- Cuentas 1990-2026\n")
   pal <- terms(slda_1990_2026, 15)[, m]
   sem <- featnames(dfm_select(dtm_1990_2026, pattern = dic[m]))
-  print(data.frame(palabra = pal, tipo = ifelse(pal %in% sem, "semilla", "descubierta")))
+  
+  pal_prob_90_26[[paste0(m, "_palabra")]] <- pal
+  pal_prob_90_26[[paste0(m, "_tipo")]]    <- ifelse(pal %in% sem, "semilla", "descubierta")
 }
- 
+saveRDS(pal_prob_90_26, file = "tablas/pal_prob_90_26.rds")
+  
 ## ---- 5.2 Tópicos de Allende proyectados sobre las cuentas + metadatos ----
 # pred_cuentas tiene una fila por párrafo (los que quedaron con palabras tras dfm_match)
 pred_df <- as.data.frame(pred_cuentas[, marcos])
@@ -81,6 +93,8 @@ tab_gob <- pred_df |>
   mutate(gobierno = factor(gobierno, levels = orden_gob)) |>
   arrange(gobierno)
 tab_gob
+saveRDS(tab_gob, file = "tablas/tab_gob.rds")
+
  
 # Lo mismo con el modelo estimado directamente en las cuentas (slda_1990_2026)
 # OJO: su tópico "transformacion" salió con palabras de tiempo (años, meses, días): no mide ideología.
@@ -92,20 +106,75 @@ tab_gob_propio <- theta_propio |>
   mutate(gobierno = factor(gobierno, levels = orden_gob)) |>
   arrange(gobierno)
 tab_gob_propio
+
+saveRDS(tab_gob_propio, file = "tablas/tab_gob_propio.rds")
  
+theta_ap <- as.data.frame(slda_allende_pinochet$theta[, marcos])
+theta_ap$presidente <- docvars(dtm_allende_pinochet, "presidente")
+
+tab_gob_ap <- theta_ap |>
+  group_by(presidente) |>
+  summarise(across(all_of(marcos), mean), n_parrafos = n()) |>
+  mutate(presidente = factor(presidente, levels = c("Allende", "Pinochet"))) |>
+  arrange(presidente)
+
+tab_gob_ap
+
+saveRDS(tab_gob_ap, file = "tablas/tab_gob_ap.rds")
+
 ## ---- 5.4 Gráfico por año ----
+# 1. Definir los hitos de cambio de mando / periodos
+hitos_gobiernos <- data.frame(
+  anio = c(1990, 1994, 2000, 2006, 2010, 2014, 2018, 2022),
+  etiqueta = c("Aylwin", "Frei", "Lagos", "Bachelet I", "Piñera I", "Bachelet II", "Piñera II", "Boric")
+)
+
+# 2. Generar gráfico con líneas verticales y etiquetas
 graf_anio <- pred_df |>
   group_by(anio) |>
   summarise(across(all_of(marcos), mean)) |>
   pivot_longer(-anio, names_to = "topico", values_to = "proporcion") |>
-  ggplot(aes(anio, proporcion, color = topico)) +
-  geom_line(linewidth = 1) +
-  geom_point(size = 1.5) +
-  labs(x = NULL, y = "Proporción media del tópico (modelo Allende-Pinochet)", color = NULL) +
-  theme_minimal()
+  ggplot(aes(x = anio, y = proporcion)) +
+  
+  # Líneas de referencia para cambios de mando
+  geom_vline(data = hitos_gobiernos, aes(xintercept = anio), 
+             linetype = "dashed", color = "gray60", alpha = 0.6) +
+             
+  # Nombres de presidentes desplazados a la derecha (+0.3 años) para no tapar la línea
+  geom_text(data = hitos_gobiernos, aes(x = anio + 0.3, y = Inf, label = etiqueta), 
+            angle = 90, hjust = 1.1, vjust = 0, size = 3.2, color = "gray30", inherit.aes = FALSE) +
+            
+  # Series de tiempo
+  geom_line(aes(color = topico), linewidth = 1) +
+  geom_point(aes(color = topico), size = 1.8) +
+  
+  # Ajuste del eje X: Marcas cada 4 años desde 1990 hasta 2026 y límites con margen
+  scale_x_continuous(
+    breaks = seq(1990, 2026, by = 4),
+    limits = c(1989.5, 2026.5),
+    expand = c(0, 0)
+  ) +
+  
+  labs(
+    x = NULL, 
+    y = "Proporción media del tópico (modelo Allende-Pinochet)", 
+    color = NULL
+  ) +
+  
+  # Tema visual limpio y margen superior suficiente para que no se corten los textos
+  theme_minimal(base_size = 11) +
+  theme(
+    legend.position = "bottom",
+    panel.grid.minor = element_blank(),
+    axis.text.x = element_text(size = 9, color = "black"),
+    plot.margin = margin(t = 20, r = 15, b = 10, l = 10) # Da aire arriba y a los lados
+  ) +
+  coord_cartesian(clip = "off") # Evita que los textos superiores se corten al salirse del marco
+
 graf_anio
-ggsave("figuras/grafico_por_anio.png", graf_anio, width = 9, height = 5, dpi = 300)
- 
+
+# Guardar figura
+ggsave("figuras/grafico_por_anio.png", graf_anio, width = 10, height = 5.5, dpi = 300)
 ## ---- 5.5 Comparación con las primeras cuentas de cada mandato ----
 tab_primeras <- pred_df |>
   group_by(gobierno, primera_cuenta) |>
@@ -115,6 +184,19 @@ tab_primeras <- pred_df |>
 tab_primeras
  
  
+## ---- 5.5 Comparación con las primeras cuentas de cada mandato (con theta) ----
+tab_primeras <- pred_df |>
+  filter(tolower(primera_cuenta) %in% c("si", "sí")) |> 
+  group_by(gobierno) |>
+  summarise(
+    across(all_of(marcos), ~ round(mean(.x), 4), .names = "theta_{.col}"),
+    n_parrafos = n(),
+    .groups = "drop"
+  ) |>
+  mutate(gobierno = factor(gobierno, levels = orden_gob)) |>
+  arrange(gobierno)
+print(tab_primeras)
+saveRDS(tab_primeras, file = "tablas/tab_primeras.rds")
 # ---- PASO 6 · Validación (Parte 3) --------------------------------------
 # Texto de cada párrafo, alineado con las filas de pred_df
 texto_pred <- as.character(corp_par_1990_2026)[rownames(pred_cuentas)]
@@ -191,7 +273,6 @@ for (arch in c("validacion_20_codificada.csv", "validacion_20_orden_codificada.c
   cat("Precisión:", round(sum(v$codigo == 1) / sum(v$codigo %in% c(0, 1)), 3), "\n")
 }
 
-
 # ---- PASO 7 · Coocurrencias (Parte 4) ----------------------------------
 palabra <- "seguridad"     # >>> CAMBIAR AQUÍ <<< la palabra clave
 gov1 <- "Aylwin"           # >>> CAMBIAR AQUÍ <<< los dos gobiernos a comparar
@@ -217,16 +298,6 @@ tabla_vecinos <- data.frame(
   v2 = names(vecinos[[gov2]])[1:15], frec2 = as.numeric(vecinos[[gov2]][1:15]))
 names(tabla_vecinos) <- c("puesto", gov1, paste0("frec_", gov1), gov2, paste0("frec_", gov2))
 tabla_vecinos
- 
-## ---- 7.2 Dos redes ----
-for (g in c(gov1, gov2)) {
-  feats <- c(palabra, names(vecinos[[g]]))
-  f_sub <- fcm_select(fcms[[g]], pattern = feats, selection = "keep", case_insensitive = FALSE)
-  red <- textplot_network(f_sub, min_freq = 0.5)   # suba/baje min_freq si la red sale muy llena o muy vacía
-  print(red)
-  ggsave(paste0("figuras/red_", gsub(" ", "_", g), ".png"), red, width = 8, height = 7, dpi = 300)
-}
- 
  
 # ---- ANEXO · Reproducibilidad -------------------------------------------
 sessionInfo()
