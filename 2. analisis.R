@@ -80,8 +80,8 @@ saveRDS(pal_prob_ap, file = "tablas/pal_prob_ap.rds")
 lista_palabras_90 <- list()
 
 for (m in marcos) {
-  # Limitamos a 10 términos principales para que la tabla respire bien en el PDF
-  pal <- terms(slda_1990_2026, 25)[, m]
+  # Limitamos a 15 términos principales para que la tabla respire bien en el PDF
+  pal <- terms(slda_1990_2026, 15)[, m]
   sem <- featnames(dfm_select(dtm_1990_2026, pattern = dic[m]))
   
   pal_sem  <- pal[pal %in% sem]
@@ -108,17 +108,29 @@ pred_df$primera_cuenta <- docvars(dtm_1990_2026, "primera_cuenta")[idx]
 nrow(pred_df); ndoc(dtm_1990_2026)   # cuántos párrafos se perdieron al proyectar (menciónelo en la Parte 5)
  
 ## ---- 5.3 Tabla por gobierno ----
-tab_gob <- pred_df |>
+tab_gob_proy <- pred_df |>
   group_by(gobierno) |>
   summarise(across(all_of(marcos), mean), n_parrafos = n()) |>
   mutate(gobierno = factor(gobierno, levels = orden_gob)) |>
   arrange(gobierno)
-tab_gob
-saveRDS(tab_gob, file = "tablas/tab_gob.rds")
+tab_gob_proy
+saveRDS(tab_gob_proy, file = "tablas/tab_gob_proy.rds")
+ 
+##Tabla por gobierno y tipo de cuenta (primera vs no primera) ----
+tab_gob_proy_pc <- pred_df |>
+  group_by(gobierno, primera_cuenta) |>
+  summarise(
+    across(all_of(marcos), mean), 
+    n_parrafos = n(), 
+    .groups = "drop"
+  ) |>
+  mutate(gobierno = factor(gobierno, levels = orden_gob)) |>
+  arrange(gobierno, desc(primera_cuenta))
 
+tab_gob_proy_pc
+saveRDS(tab_gob_proy_pc, file = "tablas/tab_gob_proy_pc.rds")
  
 # Lo mismo con el modelo estimado directamente en las cuentas (slda_1990_2026)
-# OJO: su tópico "transformacion" salió con palabras de tiempo (años, meses, días): no mide ideología.
 theta_propio <- as.data.frame(slda_1990_2026$theta[, marcos])
 theta_propio$gobierno <- docvars(dtm_1990_2026, "gobierno")
 tab_gob_propio <- theta_propio |>

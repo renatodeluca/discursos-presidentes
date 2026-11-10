@@ -5,7 +5,7 @@ author:
   - name: Elena Yañez
 date: today
 lang: "es"
-fontsize: 13pt
+fontsize: 11pt
 format:
   pdf:
     toc: true
@@ -14,7 +14,8 @@ format:
     pdf-engine: xelatex
     mainfont: "Times New Roman"
     keep-tex: false
-
+execute:
+  echo: false
 ---
 
 ```{r}
@@ -25,7 +26,7 @@ library(knitr)
 library(kableExtra)
 library(dplyr)
 library(ggplot2)
-library(gt)
+library(quanteda)
 
 # Cargar automáticamente todos los archivos .rds de la carpeta tablas/
 archivos_tablas <- list.files("tablas", pattern = "\\.rds$", full.names = TRUE)
@@ -41,57 +42,80 @@ for (archivo in archivos_tablas) {
 
 **Pregunta.** ¿Volvió el lenguaje de Allende a las cuentas públicas presidenciales después de 1990?
 
-**Hipótesis 1.** A partir de la vuelta a la democracia, el lenguaje de las cuentas públicas de los presidentes se asimila al de Allende. Esta expectativa se apoya en que los gobiernos posteriores a 1990 retomaron una agenda de reformas sociales, que el discurso de Boric tras su elección en 2021 evocó explícitamente a Allende [VERIFICAR Y CITAR FUENTE], y en [AUTOR, AÑO: lectura del curso sobre el discurso político de la Unidad Popular].
+**Hipótesis 1.** A partir de la vuelta a la democracia, el lenguaje de las cuentas públicas de los presidentes de izquierda se asemeja al de Allende. Esta expectativa se apoya en que los gobiernos posteriores a 1990 retomaron una agenda de reformas sociales, que el discurso de Boric tras su elección en 2021 evocó explícitamente a Allende [VERIFICAR Y CITAR FUENTE], y en [AUTOR, AÑO: lectura del curso sobre el discurso político de la Unidad Popular].
 
 **Hipótesis 2.** La excepción a este giro es el gobierno de Kast, cuya cuenta pública de 2026 enfatiza el orden y la seguridad, en línea con [AUTOR, AÑO: lectura del curso]. Es una hipótesis frágil, porque Kast tiene una sola cuenta (223 párrafos).
 
 **Diccionario.** topicos,diccionario y residual
 
+```{r}
+#| tbl-cap: "Diccionario utilizado"
+
+dic <- dictionary(list(
+  transformacion = c("socialis*", "revoluc*", "capitalis*", "explota*", "clase",
+                     "clases", "monopol*", "imperialis*", "latifund*", "oligarq*",
+                     "liberación", "nacionalización", "transformaci*",
+                     "unidad_popular", "gobierno_popular", "área_de_propiedad_social"),
+  orden          = c("patria", "orden", "seguridad", "fuerzas_armadas",
+                     "junta_de_gobierno", "reconstrucción", "caos", "disciplina",
+                     "soberan*", "autoridad*", "subversi*", "marxis*"),
+  mercado        = c("mercado*", "privad*", "inversión", "inversiones", "competencia",
+                     "eficien*", "iniciativa*", "libertad", "moderniza*",
+                     "subsidiari*", "empresarios")))
+marcos <- names(dic)
+
+# 1. Convertir el diccionario a un data frame colapsando los términos con comas
+tab_dic_compacto <- data.frame(
+  Marco = names(dic),
+  Terminos = sapply(dic, function(x) paste(as.character(x), collapse = ", "))
+)
+
+# 2. Renderizar con kableExtra y anchos fijos para que baje de línea ordenadamente
+kable(
+  tab_dic_compacto,
+  col.names = c("Marco Temático", "Términos del Diccionario"),
+  row.names = FALSE,
+  digits = 3,
+  booktabs = TRUE
+) |>
+  kable_styling(latex_options = c("striped", "hold_position"), font_size = 9) |>
+  column_spec(1, width = "3.5cm") |>  # Columna del marco más angosta
+  column_spec(2, width = "10.5cm")    # Columna de términos con espacio amplio
+```
+
+
 # Parte 2 · Medición integrada
-
-
-*Corpus Allende-Pinochet*
-
-| Tópico | Semillas | Descubiertas |
-|---|---|---|
-| transformacion | gobierno_popular, socialismo, revolucionario, clase, capitalista, socialista, revolución, transformaciones, unidad_popular, explotación, transformación | social, pueblo, régimen, trabajadores |
-| orden | orden, patria, fuerzas_armadas, seguridad, autoridades, soberanía, reconstrucción | chile, país, nacional, nación, pasado, primera, progreso, hacia |
-| mercado | inversión, inversiones, privado, libertad, privada, empresarios, mercado | sector, sectores, parte, mayor, distribución, ingresos, economía, nacional |
 
 ```{r}
 #| label: tbl-palabras-ap
 #| tbl-cap: "Palabras semilla y descubiertas por el modelo (Modelo Allende-Pinochet)"
-
 kable(
   pal_prob_ap,
   col.names = c("Tópico", "Semillas", "Descubiertas"),
   booktabs = TRUE,
+  digits = 3,
   linesep = "\\addlinespace[1em]"
 ) |>
-  kable_styling(latex_options = c("striped", "hold_position"),
-    stripe_color = "gray!10", # Mixes 10% black with 90% white
-font_size = 11) |>
+  kable_styling(
+    latex_options = c("striped", "hold_position"),
+    stripe_color = "gray!10",
+    font_size = 11
+  ) |>
   column_spec(1, width = "3cm") |>
   column_spec(2, width = "6.5cm") |>
-  column_spec(3, width = "6.5cm")
+  column_spec(3, width = "6.5cm") 
 ```
 
-*Cuentas públicas 1990-2026 (modelo propio)*
-
-| Tópico | Semillas | Descubiertas |
-|---|---|---|
-| transformacion | (ninguna) | años, gobierno, año, hace, país, dos, días, meses, tres, pasado, materia, próximos, primer, primera, cada |
-| orden | seguridad, patria, fuerzas_armadas, orden, autoridades, reconstrucción | carabineros, delincuencia, nacional, violencia, víctimas, delitos, prevención, gobierno, instituciones |
-| mercado | inversión, privado, modernización, inversiones, libertad, mercados, mercado, iniciativas, empresarios, iniciativa | desarrollo, empresas, sector, economía, energía |
 
 ```{r}
 #| label: tbl-palabras-90
-#| tbl-cap: "Palabras semilla y descubiertas por el modelo (Modelo 1990-2026)"
+#| tbl-cap: "Palabras semilla y descubiertas por el modelo (Modelo de cuentas publicas 1990-2026)"
 
 kable(
   pal_prob_90_26,
   col.names = c("Tópico", "Semillas", "Descubiertas"),
   booktabs = TRUE,
+  digits = 3,
   linesep = "\\addlinespace[1em]"
 ) |>
   kable_styling(latex_options = c("striped", "hold_position"),
@@ -102,37 +126,37 @@ font_size = 11) |>
   column_spec(3, width = "6.5cm")
 ```
 
+\vspace{-1em}
+\footnotesize
+\textit{Nota:} Aparecen las semillas 'transformación' y 'transformaciones', pero al encontrarse en posiciones inferiores del listado, quedaron fuera de las primeras 15 seleccionadas.
 
 **Resultados por gobierno.** 
 
-| Gobierno | transformacion | orden | mercado | Párrafos |
-|---|---|---|---|---|
-| Aylwin | 0,054 | 0,058 | 0,062 | 1.556 |
-| Frei | 0,046 | 0,056 | 0,062 | 1.691 |
-| Lagos | 0,046 | 0,061 | 0,051 | 1.434 |
-| Bachelet I | 0,048 | 0,050 | 0,050 | 1.673 |
-| Piñera I | 0,045 | 0,055 | 0,045 | 1.088 |
-| Bachelet II | 0,048 | 0,051 | 0,050 | 1.679 |
-| Piñera II | 0,056 | 0,064 | 0,049 | 851 |
-| Boric | 0,050 | 0,060 | 0,046 | 946 |
-| Kast | 0,040 | 0,075 | 0,043 | 223 |
+```{r}
+#| tbl-cap: "Modelo de Allende y Pinochet, USA THETA"
+kable(tab_gob_ap, digits = 3)  %>%
+  kable_styling(full_width = TRUE)
+```
 
+```{r}
+#| tbl-cap: "Modelo de cuentas publicas 1990-2026 proyectando los tópicos del modelo anterior"
+
+kable(tab_gob_proy, digits = 3,) %>%
+  kable_styling(full_width = TRUE)
+
+```
+
+```{r}
+#| tbl-cap: "Modelo de cuentas publicas 1990-2026 utilizando semillas del diccionario original"
+
+
+kable(tab_gob_propio, digits = 3)  %>%
+  kable_styling(full_width = TRUE)
+
+```
 
 
 ![Proporción media de cada tópico por año (modelo Allende-Pinochet proyectado sobre las cuentas).](figuras/grafico_por_anio.png){width=90%}
-
-
-| Gobierno | transformacion | orden | mercado |
-|---|---|---|---|
-| Aylwin | +0,005 | +0,001 | +0,015 |
-| Frei | +0,000 | +0,004 | +0,011 |
-| Lagos | +0,004 | +0,014 | +0,000 |
-| Bachelet I | +0,001 | −0,002 | +0,005 |
-| Piñera I | +0,008 | −0,003 | +0,006 |
-| Bachelet II | −0,006 | −0,003 | +0,001 |
-| Piñera II | −0,005 | −0,010 | +0,004 |
-| Boric | +0,003 | −0,002 | −0,004 |
-| Kast | (solo una cuenta) | (solo una cuenta) | (solo una cuenta) |
 
 
 # Parte 3 · Validación
