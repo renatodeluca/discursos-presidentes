@@ -108,6 +108,9 @@ saveRDS(dtm_1990_2026, "data/dtm_1990_2026.rds")
 saveRDS(dtm_allende_pinochet, "data/dtm_allende_pinochet.rds") 
 saveRDS(toks_1990_2026_sin, "data/toks_1990_2026_sin.rds")   # para el kwic y las redes
 saveRDS(corp_par_1990_2026, "data/corp_par_1990_2026.rds")
+saveRDS(corp_par_allende_pinochet, "data/corp_par_allende_pinochet.rds")
+saveRDS(toks_allende_pinochet_sin , "data/toks_allende_pinochet_sin.rds")
+
 
 
 # ---- PASO 3 · Elegir la pregunta y su diccionario de semillas ----------

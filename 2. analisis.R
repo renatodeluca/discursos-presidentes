@@ -23,6 +23,8 @@ dtm_allende_pinochet <- readRDS("data/dtm_allende_pinochet.rds")
  
 # otros objetos guardados en el script de procesamiento
 toks_1990_2026_sin <- readRDS("data/toks_1990_2026_sin.rds")
+toks_allende_pinochet_sin <- readRDS("data/toks_allende_pinochet_sin.rds")
+corp_par_allende_pinochet <- readRDS("data/corp_par_allende_pinochet.rds")
 corp_par_1990_2026 <- readRDS("data/corp_par_1990_2026.rds")
 pred_cuentas <- readRDS("data/pred_cuentas_desde_AP.rds")   # tópicos de Allende-Pinochet proyectados sobre las cuentas
  
@@ -256,18 +258,23 @@ validacion <- data.frame(id = rownames(pred_cuentas)[muestra],
                          codigo = NA)    # 1 = sí, 0 = no, 9 = duda
 write.csv(validacion, "validacion_20.csv", row.names = FALSE, fileEncoding = "UTF-8")
 # Abra validacion_20.csv, complete la columna "codigo" (1/0/9), guárdelo y corra:
-# v <- read.csv("validacion_20.csv", encoding = "UTF-8")
-# sum(v$codigo == 1) / sum(v$codigo %in% c(0, 1))      # precisión (los 9 se excluyen)
-# table(v$codigo)
+v <- read.csv("validacion_20_codificada.csv", encoding = "UTF-8")
+sum(v$codigo == 1) / sum(v$codigo %in% c(0, 1))      # precisión (los 9 se excluyen)
+table(v$codigo)
  
 ## ---- 6.3 (c) kwic de una palabra ambigua ----
 # Se usan los tokens SIN quitar stopwords, para que el contexto se pueda leer.
 toks_kwic <- tokens(corp_par_1990_2026, remove_punct = TRUE)
-kw <- kwic(toks_kwic, "seguridad", window = 8)
+kw <- kwic(toks_kwic, "transformación", window = 8)
 nrow(kw)
 set.seed(1)
 kw[sample(nrow(kw), 20), ]    # 20 casos al azar (puede cambiar la palabra)
  
+toks_kwic <- tokens(corp_par_allende_pinochet, remove_punct = TRUE)
+kw <- kwic(toks_kwic, "transformación", window = 8)
+nrow(kw)
+set.seed(1)
+kw[sample(nrow(kw), 20), ]  
 ## ---- 6.4 (d) Robustez: cambiar UNA sola decisión (residual = 15 -> 8) ----
 # Se reestima el modelo de Allende-Pinochet con residual = 8, se proyecta de nuevo
 # sobre las cuentas y se compara el orden de los gobiernos.
@@ -332,6 +339,38 @@ tabla_vecinos <- data.frame(
 names(tabla_vecinos) <- c("puesto", gov1, paste0("frec_", gov1), gov2, paste0("frec_", gov2))
 tabla_vecinos
  
+#---- PASO 7 · Coocurrencias (Pinochet vs Kast) --------------------------
+palabra <- "orden"     # Palabra clave a evaluar
+gov1 <- "Pinochet"
+gov2 <- "Kast"
+
+# 1. Extraer tokens de Pinochet desde corp/toks de Allende-Pinochet
+tk_pinochet <- tokens_subset(toks_allende_pinochet_sin, presidente == "Pinochet")
+f_pinochet  <- fcm(tk_pinochet, context = "window", window = 5, tri = FALSE)
+fila_p      <- f_pinochet[palabra, ]
+v_pinochet  <- setNames(as.numeric(as.matrix(fila_p)), colnames(fila_p))
+v_pinochet  <- sort(v_pinochet, decreasing = TRUE)
+v_pinochet  <- v_pinochet[names(v_pinochet) != palabra]
+
+# 2. Extraer tokens de Kast desde toks de 1990-2026
+tk_kast <- tokens_subset(toks_1990_2026_sin, gobierno == "Kast")
+f_kast  <- fcm(tk_kast, context = "window", window = 5, tri = FALSE)
+fila_k  <- f_kast[palabra, ]
+v_kast  <- setNames(as.numeric(as.matrix(fila_k)), colnames(fila_k))
+v_kast  <- sort(v_kast, decreasing = TRUE)
+v_kast  <- v_kast[names(v_kast) != palabra]
+
+# 3. Construir data frame unificado
+tabla_vecinos_pinochet_kast <- data.frame(
+  puesto = 1:15,
+  v1    = names(v_pinochet)[1:15], 
+  frec1 = as.numeric(v_pinochet[1:15]),
+  v2    = names(v_kast)[1:15], 
+  frec2 = as.numeric(v_kast[1:15])
+)
+saveRDS(tabla_vecinos_pinochet_kast, file = "tablas/tabla_vecinos_pinochet_kast.rds")
+
+
 # ---- ANEXO · Reproducibilidad -------------------------------------------
 sessionInfo()
 dic               # diccionario final completo

@@ -99,7 +99,7 @@ kable(
   kable_styling(
     latex_options = c("striped", "hold_position"),
     stripe_color = "gray!10",
-    font_size = 11
+    font_size = 9
   ) |>
   column_spec(1, width = "3cm") |>
   column_spec(2, width = "6.5cm") |>
@@ -120,7 +120,7 @@ kable(
 ) |>
   kable_styling(latex_options = c("striped", "hold_position"),
     stripe_color = "gray!10", # Mixes 10% black with 90% white
-font_size = 11) |>
+font_size = 9) |>
   column_spec(1, width = "3cm") |>
   column_spec(2, width = "6.5cm") |>
   column_spec(3, width = "6.5cm")
@@ -156,7 +156,7 @@ kable(tab_gob_propio, digits = 3)  %>%
 ```
 
 
-![Proporción media de cada tópico por año (modelo Allende-Pinochet proyectado sobre las cuentas).](figuras/grafico_por_anio.png){width=90%}
+![Proporción media de cada tópico por año (modelo Allende-Pinochet proyectado sobre las cuentas de 1990-2026).](figuras/grafico_por_anio.png){width=90%}
 
 
 # Parte 3 · Validación
@@ -187,7 +187,45 @@ kable(tab_gob_propio, digits = 3)  %>%
 
 ![Red de coocurrencias de "seguridad" en el gobierno de Aylwin.](figuras/red_Aylwin.png){width=48%} ![Red de coocurrencias de "seguridad" en el gobierno de Boric.](figuras/red_Boric.png){width=48%}
 
+```{r}
+df_contexto <- data.frame(
+  Presidente = c("Allende, 1973", "Boric, 2022"),
+  `Palabra en contexto` = c(
+    "'Es el comienzo de una transformación radical en las relaciones de trabajo y en el modelo organizativo cuyo desarrollo va a ocupar durante muchos años a los trabajadores. Los mecanismos de participación son el símbolo del desaparecimiento del poder empresarial.'",
+    "'Por eso estamos enfocando nuestros esfuerzos en la protección de los ecosistemas y adaptación. Promulgamos la Ley Marco de Cambio Climático, que implica una transformación integral del Estado para enfocarse en la acción climática.'"
+  ),
+  check.names = FALSE
+)
 
+kable(
+  df_contexto,
+  col.names = c("Presidente", "Palabra en contexto"),
+  booktabs = TRUE,
+) |>
+  kable_styling(
+    latex_options = c("striped", "hold_position"),
+    stripe_color = "gray!10",
+    font_size = 10
+  ) |>
+  column_spec(1, width = "3.5cm") |>
+  column_spec(2, width = "12.5cm")
+```
+
+
+```{r}
+kable(
+  tabla_vecinos_pinochet_kast,
+  col.names = c("Puesto", "Pinochet", "Frec.", "Kast", "Frec."),
+  booktabs = TRUE,
+  align = c("c", "l", "r", "l", "r"),
+  linesep = "\\addlinespace[0.4em]"
+) |>
+  kable_styling(
+    latex_options = c("striped", "hold_position"),
+    stripe_color = "gray!10",
+    font_size = 9
+  ) 
+```
 
 # Parte 5 · Interpretación, límites y ética
 
