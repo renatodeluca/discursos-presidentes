@@ -17,6 +17,26 @@ format:
 
 ---
 
+```{r}
+#| label: setup
+#| include: false
+
+library(knitr)
+library(kableExtra)
+library(dplyr)
+library(ggplot2)
+library(gt)
+
+# Cargar automáticamente todos los archivos .rds de la carpeta tablas/
+archivos_tablas <- list.files("tablas", pattern = "\\.rds$", full.names = TRUE)
+
+for (archivo in archivos_tablas) {
+  # Extrae el nombre sin ruta ni extensión y asigna el objeto al entorno global
+  nombre_objeto <- gsub("\\.rds$", "", basename(archivo))
+  assign(nombre_objeto, readRDS(archivo), envir = .GlobalEnv)
+}
+```
+
 # Parte 1 · Pregunta, hipótesis y semillas
 
 **Pregunta.** ¿Volvió el lenguaje de Allende a las cuentas públicas presidenciales después de 1990?
@@ -38,6 +58,24 @@ format:
 | orden | orden, patria, fuerzas_armadas, seguridad, autoridades, soberanía, reconstrucción | chile, país, nacional, nación, pasado, primera, progreso, hacia |
 | mercado | inversión, inversiones, privado, libertad, privada, empresarios, mercado | sector, sectores, parte, mayor, distribución, ingresos, economía, nacional |
 
+```{r}
+#| label: tbl-palabras-ap
+#| tbl-cap: "Palabras semilla y descubiertas por el modelo (Modelo Allende-Pinochet)"
+
+kable(
+  pal_prob_ap,
+  col.names = c("Tópico", "Semillas", "Descubiertas"),
+  booktabs = TRUE,
+  linesep = "\\addlinespace[1em]"
+) |>
+  kable_styling(latex_options = c("striped", "hold_position"),
+    stripe_color = "gray!10", # Mixes 10% black with 90% white
+font_size = 11) |>
+  column_spec(1, width = "3cm") |>
+  column_spec(2, width = "6.5cm") |>
+  column_spec(3, width = "6.5cm")
+```
+
 *Cuentas públicas 1990-2026 (modelo propio)*
 
 | Tópico | Semillas | Descubiertas |
@@ -45,6 +83,25 @@ format:
 | transformacion | (ninguna) | años, gobierno, año, hace, país, dos, días, meses, tres, pasado, materia, próximos, primer, primera, cada |
 | orden | seguridad, patria, fuerzas_armadas, orden, autoridades, reconstrucción | carabineros, delincuencia, nacional, violencia, víctimas, delitos, prevención, gobierno, instituciones |
 | mercado | inversión, privado, modernización, inversiones, libertad, mercados, mercado, iniciativas, empresarios, iniciativa | desarrollo, empresas, sector, economía, energía |
+
+```{r}
+#| label: tbl-palabras-90
+#| tbl-cap: "Palabras semilla y descubiertas por el modelo (Modelo 1990-2026)"
+
+kable(
+  pal_prob_90_26,
+  col.names = c("Tópico", "Semillas", "Descubiertas"),
+  booktabs = TRUE,
+  linesep = "\\addlinespace[1em]"
+) |>
+  kable_styling(latex_options = c("striped", "hold_position"),
+    stripe_color = "gray!10", # Mixes 10% black with 90% white
+font_size = 11) |>
+  column_spec(1, width = "3cm") |>
+  column_spec(2, width = "6.5cm") |>
+  column_spec(3, width = "6.5cm")
+```
+
 
 **Resultados por gobierno.** 
 

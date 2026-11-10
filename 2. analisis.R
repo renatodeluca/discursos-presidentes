@@ -55,25 +55,46 @@ marcos <- names(dic)
 # "descubierta" = el modelo la asoció al tópico sin que estuviera en el diccionario.
 pal_prob_ap <- data.frame(row.names = 1:15)
 
+lista_palabras <- list()
+
 for (m in marcos) {
   pal <- terms(slda_allende_pinochet, 15)[, m]
   sem <- featnames(dfm_select(dtm_allende_pinochet, pattern = dic[m]))
   
-  pal_prob_ap[[paste0(m, "_palabra")]] <- pal
-  pal_prob_ap[[paste0(m, "_tipo")]]    <- ifelse(pal %in% sem, "semilla", "descubierta")
+  pal_sem  <- pal[pal %in% sem]
+  pal_desc <- pal[!pal %in% sem]
+  
+  lista_palabras[[m]] <- data.frame(
+    topico       = m,
+    semillas     = paste(pal_sem, collapse = ", "),
+    descubiertas = paste(pal_desc, collapse = ", ")
+  )
 }
 
+# 2. Mantener el nombre del objeto original pal_prob_ap
+pal_prob_ap <- bind_rows(lista_palabras)
+
+# 3. Guardar en la carpeta tablas con el mismo nombre de archivo
 saveRDS(pal_prob_ap, file = "tablas/pal_prob_ap.rds")
 
-pal_prob_90_26 <- data.frame(row.names = 1:15)
+lista_palabras_90 <- list()
 
 for (m in marcos) {
-  pal <- terms(slda_1990_2026, 15)[, m]
+  # Limitamos a 10 términos principales para que la tabla respire bien en el PDF
+  pal <- terms(slda_1990_2026, 25)[, m]
   sem <- featnames(dfm_select(dtm_1990_2026, pattern = dic[m]))
   
-  pal_prob_90_26[[paste0(m, "_palabra")]] <- pal
-  pal_prob_90_26[[paste0(m, "_tipo")]]    <- ifelse(pal %in% sem, "semilla", "descubierta")
+  pal_sem  <- pal[pal %in% sem]
+  pal_desc <- pal[!pal %in% sem]
+  
+  lista_palabras_90[[m]] <- data.frame(
+    topico       = m,
+    semillas     = ifelse(length(pal_sem) > 0, paste(pal_sem, collapse = ", "), "(ninguna)"),
+    descubiertas = ifelse(length(pal_desc) > 0, paste(pal_desc, collapse = ", "), "(ninguna)")
+  )
 }
+
+pal_prob_90_26 <- bind_rows(lista_palabras_90)
 saveRDS(pal_prob_90_26, file = "tablas/pal_prob_90_26.rds")
   
 ## ---- 5.2 Tópicos de Allende proyectados sobre las cuentas + metadatos ----
