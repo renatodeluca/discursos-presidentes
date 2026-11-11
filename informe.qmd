@@ -44,12 +44,13 @@ for (archivo in archivos_tablas) {
 
 **Pregunta.** ¿Volvió el lenguaje de Allende a las cuentas públicas presidenciales después de 1990?
 
-**Hipótesis 1.** A partir de la vuelta a la democracia, el lenguaje de las cuentas públicas de los presidentes de izquierda y centroizquierda (Aylwin, Frei, Lagos, Bachelet y Boric) se asemeja al de Allende. Esto se apoya en un hecho del período, pues al ganar la primaria de Apruebo Dignidad en julio de 2021, Boric cerró su discurso citando el mensaje final de Allende sobre las grandes alamedas (Cooperativa.cl, 2021). También en que el discurso de Allende articuló la vía chilena al socialismo e interpeló al pueblo como sujeto del nuevo modelo (Roldán, 2011). Sin embargo, Moulian (1997) en su clásico texto, sostiene que la democracia posautoritaria preservó la base económica heredada de la dictadura, por lo que la hipótesis se plantea como una prueba entre dos lecturas.
+Para responder esta pregunta se utiizó un modelo de tópicos semillado (seeded LDA), el cual permite integrar nuestro constructos teóricos de interés con la posibilidad de identificar patrones nuevos y no identificados con anterioridad, lo que permite examinar el grado que el constructo teórico original se alinea con los patrones que identifica el modelo (Gómez-Cruz et al., 2024, p. 11-12)
 
-**Hipótesis 2.** La excepción a este giro es el gobierno de Kast, cuya primera cuenta pública (1 de junio de 2026) organizó su mensaje en torno a recuperar el orden y la seguridad (Ex-Ante, 2026), y que se ha leído como un discurso centrado en la seguridad pública y la seguridad nacional (Masalleras, 2026). Es una hipótesis frágil, porque Kast tiene una sola cuenta (223 párrafos).
+**Hipótesis 1.** A partir de la vuelta a la democracia, el lenguaje de las cuentas públicas de los presidentes de izquierda y centroizquierda (Aylwin, Frei, Lagos, Bachelet y Boric) se asemeja al de Allende. Esto se apoya en un hecho del período, pues al ganar la primaria de Apruebo Dignidad en julio de 2021, Boric cerró su discurso citando el mensaje final de Allende sobre las grandes alamedas (Boric, 2021). También en que el discurso de Allende articuló la vía chilena al socialismo e interpeló al pueblo como sujeto del nuevo modelo (Roldán, 2011). Sin embargo, Moulian (1997) en su clásico texto, sostiene que la democracia post-dictadura preservó la base económica heredada de el periodo dictatorial, por lo que la hipótesis se plantea como una prueba entre dos lecturas.
 
- **Diccionario.** Usamos el diccionario de las sesiones 9 y 10 sin modificaciones, con tres tópicos sembrados (`transformacion`, `orden` y `mercado`). El único ajuste fue de preprocesamiento, pues agregamos como expresiones compuestas "unidad popular", "gobierno popular", "junta de gobierno" y "área de propiedad social". Sin esto, esas semillas multipalabra no existían en la matriz y tenían cero apariciones. La unidad de análisis es el párrafo (se eliminaron los de menos de 10 palabras). Los modelos se estimaron con `residual = 15` y semilla de aleatorización 2026.
+**Hipótesis 2.** La excepción a este giro es el gobierno de Kast, cuya primera cuenta pública (1 de junio de 2026) organizó su mensaje en torno a recuperar el orden y la seguridad (Kast, 2026), y que se ha leído como un discurso centrado en la seguridad pública y la seguridad nacional (Masalleras, 2026). Es una hipótesis frágil, porque Kast tiene una sola cuenta (223 párrafos).
 
+ **Diccionario.** Usamos el diccionario de las sesiones 9 y 10 sin modificaciones, con tres tópicos sembrados (`transformacion`, `orden` y `mercado`). El único ajuste fue de preprocesamiento, pues agregamos como expresiones compuestas "unidad popular", "gobierno popular", "junta de gobierno" y "área de propiedad social". Sin esto, esas semillas multipalabra no existían en la matriz y tenían cero apariciones. La unidad de análisis es el párrafo (se eliminaron los de menos de 10 palabras). Los modelos se estimaron con `residual = 15` y semilla de aleatorización fue "2026".
 ```{r}
 #| tbl-cap: "Diccionario utilizado"
 
@@ -237,9 +238,9 @@ kable(
 
 # Referencias
 
-Cooperativa.cl. (2021, 18 de julio). Boric tras arrasar en la primaria: “Para ganar en noviembre necesitamos ser muchos más”. https://www.cooperativa.cl/noticias/site/artic/20210718/pags-amp/20210718214002.html
+Boric, G. (2021, 19 de julio). Discurso de Gabriel Boric tras ganar elecciones primarias presidenciales 2021 [Discurso]. Crónica Digital. https://cronicadigital.cl/discurso-de-gabriel-boric-tras-ganar-elecciones-primarias-presidenciales-2021/
 
-Ex-Ante. (2026, 1 de junio). Cuenta Pública: Kast presenta robusto plan de seguridad y dice que recuperación económica “no será rápida ni sin dolor”. https://www.ex-ante.cl/cuenta-publica-kast-presenta-robusto-plan-de-seguridad-y-dice-que-recuperacion-economica-no-sera-rapida-ni-sin-dolor/
+Kast, J. A. (2026, 1 de junio). Cuenta Pública de S.E. el Presidente de la República, José Antonio Kast Rist, ante el Congreso Nacional [Discurso]. Biblioteca del Congreso Nacional de Chile. https://www.bcn.cl/obtienearchivo?id=recursoslegales/10221.3/83042/1/01-06-2026.pdf
 
 Masalleras, M. (2026, 3 de junio). Los otros desafíos para el gobierno: seguridad nacional y defensa. Athenalab. https://www.athenalab.org/wp-content/uploads/2026/06/Los-otros-desafios-para-el-gobierno-seguridad-nacional-y-defensa-1.pdf
 
