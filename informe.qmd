@@ -44,11 +44,11 @@ for (archivo in archivos_tablas) {
 
 **Pregunta.** ¿Volvió el lenguaje de Allende a las cuentas públicas presidenciales después de 1990?
 
-**Hipótesis 1.** A partir de la vuelta a la democracia, el lenguaje de las cuentas públicas de los presidentes de izquierda se asemeja al de Allende. Esta expectativa se apoya en que los gobiernos posteriores a 1990 retomaron una agenda de reformas sociales, que el discurso de Boric tras su elección en 2021 evocó explícitamente a Allende [VERIFICAR Y CITAR FUENTE], y en [AUTOR, AÑO: lectura del curso sobre el discurso político de la Unidad Popular].
+**Hipótesis 1.** A partir de la vuelta a la democracia, el lenguaje de las cuentas públicas de los presidentes de izquierda y centroizquierda (Aylwin, Frei, Lagos, Bachelet y Boric) se asemeja al de Allende. Esto se apoya en un hecho del período, pues al ganar la primaria de Apruebo Dignidad en julio de 2021, Boric cerró su discurso citando el mensaje final de Allende sobre las grandes alamedas (Cooperativa.cl, 2021). También en que el discurso de Allende articuló la vía chilena al socialismo e interpeló al pueblo como sujeto del nuevo modelo (Roldán, 2011). Sin embargo, Moulian (1997) en su clásico texto, sostiene que la democracia posautoritaria preservó la base económica heredada de la dictadura, por lo que la hipótesis se plantea como una prueba entre dos lecturas.
 
-**Hipótesis 2.** La excepción a este giro es el gobierno de Kast, cuya cuenta pública de 2026 enfatiza el orden y la seguridad, en línea con [AUTOR, AÑO: lectura del curso]. Es una hipótesis frágil, porque Kast tiene una sola cuenta (223 párrafos).
+**Hipótesis 2.** La excepción a este giro es el gobierno de Kast, cuya primera cuenta pública (1 de junio de 2026) organizó su mensaje en torno a recuperar el orden y la seguridad (Ex-Ante, 2026), y que se ha leído como un discurso centrado en la seguridad pública y la seguridad nacional (Masalleras, 2026). Es una hipótesis frágil, porque Kast tiene una sola cuenta (223 párrafos).
 
-**Diccionario.** topicos,diccionario y residual
+ **Diccionario.** Usamos el diccionario de las sesiones 9 y 10 sin modificaciones, con tres tópicos sembrados (`transformacion`, `orden` y `mercado`). El único ajuste fue de preprocesamiento, pues agregamos como expresiones compuestas "unidad popular", "gobierno popular", "junta de gobierno" y "área de propiedad social". Sin esto, esas semillas multipalabra no existían en la matriz y tenían cero apariciones. La unidad de análisis es el párrafo (se eliminaron los de menos de 10 palabras). Los modelos se estimaron con `residual = 15` y semilla de aleatorización 2026.
 
 ```{r}
 #| tbl-cap: "Diccionario utilizado"
@@ -87,6 +87,9 @@ kable(
 
 
 # Medición integrada
+
+Estimamos dos modelos semillados. El primero es sobre el corpus Allende-Pinochet (1.278 párrafos) y otro sobre las cuentas 1990-2026 (11.156 párrafos). El modelo principal es el de Allende-Pinochet proyectado sobre las cuentas, porque así los tópicos quedan definidos por el vocabulario de la época de Allende, que es lo que pregunta la hipótesis 1. Al proyectar se perdieron 15 párrafos (0,13%). El modelo estimado directamente en las cuentas se usa solo como contraste.
+
 
 ```{r}
 #| label: tbl-palabras-ap
@@ -128,15 +131,8 @@ font_size = 9) |>
   column_spec(3, width = "6.5cm")
 ```
 
-**Resultados por gobierno.** 
+En Allende-Pinochet, `transformacion` confirma el concepto, 11 de sus 15 palabras son semillas y las descubiertas (pueblo, régimen, trabajadores) son coherentes con él. Por otro lado, `orden` lo confirma solo en parte, porque mezcla 7 semillas con palabras genéricas (chile, país, nacional). También `mercado` confirma y amplía con vocabulario económico (distribución, ingresos, economía). En las cuentas, `transformacion` desmiente el concepto, pues no contiene ninguna semilla y se llena de palabras de tiempo (años, meses, días), por lo que no mide ideología. Por otro lado, `orden` cambia de sentido, ya que, pasa del orden patriótico-militar a la seguridad pública (carabineros, delincuencia, violencia, delitos, víctimas). Por último, `mercado` confirma y amplía hacia desarrollo, empresas y energía.
 
-```{r}
-#| label: tab_gob_ap
-#| tbl-cap: "Modelo de Allende y Pinochet, USA THETA"
-
-kable(tab_gob_ap, digits = 3)  %>%
-  kable_styling(latex_options = c("striped", "hold_position"), font_size = 9)
-```
 
 ```{r}
 #| label: tbl-gob-proy
@@ -154,15 +150,6 @@ kable(
     font_size = 9,
     position = "center"
   )
-```
-
-```{r}
-#| label: tab_gob_propio
-#| tbl-cap: "Modelo de cuentas publicas 1990-2026 utilizando semillas del diccionario original"
-kable(tab_gob_propio, digits = 3)  %>%
-  kable_styling( latex_options = c("striped", "hold_position"), font_size = 9
-)
-
 ```
 
 
@@ -248,12 +235,43 @@ kable(
 
 # Interpretación, límites y ética
 
+# Referencias
+
+Cooperativa.cl. (2021, 18 de julio). Boric tras arrasar en la primaria: “Para ganar en noviembre necesitamos ser muchos más”. https://www.cooperativa.cl/noticias/site/artic/20210718/pags-amp/20210718214002.html
+
+Ex-Ante. (2026, 1 de junio). Cuenta Pública: Kast presenta robusto plan de seguridad y dice que recuperación económica “no será rápida ni sin dolor”. https://www.ex-ante.cl/cuenta-publica-kast-presenta-robusto-plan-de-seguridad-y-dice-que-recuperacion-economica-no-sera-rapida-ni-sin-dolor/
+
+Masalleras, M. (2026, 3 de junio). Los otros desafíos para el gobierno: seguridad nacional y defensa. Athenalab. https://www.athenalab.org/wp-content/uploads/2026/06/Los-otros-desafios-para-el-gobierno-seguridad-nacional-y-defensa-1.pdf
+
+Moulian, T. (1997). Chile actual: anatomía de un mito. LOM/Arcis.
+
+Roldán, Y. (2011). Salvador Allende: los argumentos del triunfo y los argumentos de la traición. Revista Austral de Ciencias Sociales, (21), 5-22.
+
+
 
 # Anexo
 
 **Semilla y parámetros.** `set.seed(2026)`; `residual = 15` (robustez: `residual = 8`); paquetes `quanteda` 4.5.1 y `seededlda` 1.4.4.
 
 **Expresiones compuestas** usadas en el preprocesamiento: ****poner
+
+
+```{r}
+#| label: tab_gob_ap
+#| tbl-cap: "Modelo de Allende y Pinochet, USA THETA"
+
+kable(tab_gob_ap, digits = 3)  %>%
+  kable_styling(latex_options = c("striped", "hold_position"), font_size = 9)
+```
+
+```{r}
+#| label: tab_gob_propio
+#| tbl-cap: "Modelo de cuentas publicas 1990-2026 utilizando semillas del diccionario original"
+kable(tab_gob_propio, digits = 3)  %>%
+  kable_styling( latex_options = c("striped", "hold_position"), font_size = 9
+)
+
+```
 
 
 **sessionInfo()**
