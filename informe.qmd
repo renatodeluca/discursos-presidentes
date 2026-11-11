@@ -2,13 +2,13 @@
 title: "Análisis computacional de texto"
 author:
   - name: Renato De Luca 
-  - name: Elena Yañez
+  - name: Elena Yañez Rodríguez
 date: today
 lang: "es"
 fontsize: 11pt
 format:
   pdf:
-    toc: true
+    toc: false
     number-sections: true
     geometry: margin=2.5cm
     pdf-engine: xelatex
@@ -17,6 +17,8 @@ format:
 execute:
   echo: false
 ---
+
+\newpage
 
 ```{r}
 #| label: setup
@@ -38,7 +40,7 @@ for (archivo in archivos_tablas) {
 }
 ```
 
-# Parte 1 · Pregunta, hipótesis y semillas
+# Pregunta, hipótesis y semillas
 
 **Pregunta.** ¿Volvió el lenguaje de Allende a las cuentas públicas presidenciales después de 1990?
 
@@ -84,7 +86,7 @@ kable(
 ```
 
 
-# Parte 2 · Medición integrada
+# Medición integrada
 
 ```{r}
 #| label: tbl-palabras-ap
@@ -126,32 +128,40 @@ font_size = 9) |>
   column_spec(3, width = "6.5cm")
 ```
 
-\vspace{-1em}
-\footnotesize
-\textit{Nota:} Aparecen las semillas 'transformación' y 'transformaciones', pero al encontrarse en posiciones inferiores del listado, quedaron fuera de las primeras 15 seleccionadas.
-
 **Resultados por gobierno.** 
 
 ```{r}
+#| label: tab_gob_ap
 #| tbl-cap: "Modelo de Allende y Pinochet, USA THETA"
+
 kable(tab_gob_ap, digits = 3)  %>%
-  kable_styling(full_width = TRUE)
+  kable_styling(latex_options = c("striped", "hold_position"), font_size = 9)
 ```
 
 ```{r}
-#| tbl-cap: "Modelo de cuentas publicas 1990-2026 proyectando los tópicos del modelo anterior"
+#| label: tbl-gob-proy
+#| tbl-cap: "Modelo de cuentas públicas 1990-2026 proyectando los tópicos del modelo anterior"
+#| echo: false
 
-kable(tab_gob_proy, digits = 3,) %>%
-  kable_styling(full_width = TRUE)
-
+kable(
+  tab_gob_proy, 
+  digits = 3, 
+  booktabs = TRUE
+) |>
+  kable_styling(
+    latex_options = c("striped", "hold_position"),
+    stripe_color = "gray!10",
+    font_size = 9,
+    position = "center"
+  )
 ```
 
 ```{r}
+#| label: tab_gob_propio
 #| tbl-cap: "Modelo de cuentas publicas 1990-2026 utilizando semillas del diccionario original"
-
-
 kable(tab_gob_propio, digits = 3)  %>%
-  kable_styling(full_width = TRUE)
+  kable_styling( latex_options = c("striped", "hold_position"), font_size = 9
+)
 
 ```
 
@@ -159,7 +169,7 @@ kable(tab_gob_propio, digits = 3)  %>%
 ![Proporción media de cada tópico por año (modelo Allende-Pinochet proyectado sobre las cuentas de 1990-2026).](figuras/grafico_por_anio.png){width=90%}
 
 
-# Parte 3 · Validación
+# Validación
 .
 
 | Tópico | Sí (1) | No (0) | Duda (9) | Precisión |
@@ -168,26 +178,12 @@ kable(tab_gob_propio, digits = 3)  %>%
 | orden | 3 | 16 | 1 | 15,8% (3/19) |
 
 
-# Parte 4 · Coocurrencias
-
-
-
-| Puesto | Aylwin | Frec. | Boric | Frec. |
-|---|---|---|---|---|
-| 1 | orden | 12 | gobierno | 10 |
-| 2 | gobierno | 7 | recursos | 9 |
-| 3 | consejo | 7 | alimentaria | 9 |
-| 4 | ley | 6 | económica | 7 |
-| 5 | constitucional | 5 | además | 7 |
-| 6 | nacional | 5 | proyectos | 6 |
-| 7 | paz | 4 | fortalecer | 6 |
-| 8 | fuerzas | 4 | país | 5 |
-| 9 | públicos | 4 | personas | 5 |
-| 10 | interior | 4 | justicia | 5 |
+# Coocurrencias
 
 ![Red de coocurrencias de "seguridad" en el gobierno de Aylwin.](figuras/red_Aylwin.png){width=48%} ![Red de coocurrencias de "seguridad" en el gobierno de Boric.](figuras/red_Boric.png){width=48%}
 
 ```{r}
+#| tbl-cap: "Palabra en contexto: Transformación"
 df_contexto <- data.frame(
   Presidente = c("Allende, 1973", "Boric, 2022"),
   `Palabra en contexto` = c(
@@ -213,6 +209,8 @@ kable(
 
 
 ```{r}
+#| tbl-cap: "Tabla de vecinos Pinochet y Kast, palabra 'orden' "
+
 kable(
   tabla_vecinos_pinochet_kast,
   col.names = c("Puesto", "Pinochet", "Frec.", "Kast", "Frec."),
@@ -227,27 +225,33 @@ kable(
   ) 
 ```
 
-# Parte 5 · Interpretación, límites y ética
+
+```{r}
+#| tbl-cap: "Comparación de posiciones del modelo original contra el de 8 residuos"
+
+kable(
+  tabla_robustez,
+  col.names = c("Gobierno", "Base", "Nuevo", "Base", "Nuevo.", "Base", "Nuevo."),
+  booktabs = TRUE,
+  align = c("l", rep("c", 6)),
+  linesep = ""
+) |>
+  add_header_above(c(" " = 1, "Transformación" = 2, "Orden" = 2, "Mercado" = 2)) |>
+  kable_styling(
+    latex_options = c("striped", "hold_position"),
+    stripe_color = "gray!10",
+    font_size = 9
+  ) |>
+  column_spec(1, width = "3.2cm") |>
+  column_spec(2:7, width = "1.8cm")
+```
+
+# Interpretación, límites y ética
 
 
 # Anexo
 
 **Semilla y parámetros.** `set.seed(2026)`; `residual = 15` (robustez: `residual = 8`); paquetes `quanteda` 4.5.1 y `seededlda` 1.4.4.
-
-
-```r
-dic <- dictionary(list(
-  transformacion = c("socialis*", "revoluc*", "capitalis*", "explota*", "clase",
-                     "clases", "monopol*", "imperialis*", "latifund*", "oligarq*",
-                     "liberación", "nacionalización", "transformaci*",
-                     "unidad_popular", "gobierno_popular", "área_de_propiedad_social"),
-  orden          = c("patria", "orden", "seguridad", "fuerzas_armadas",
-                     "junta_de_gobierno", "reconstrucción", "caos", "disciplina",
-                     "soberan*", "autoridad*", "subversi*", "marxis*"),
-  mercado        = c("mercado*", "privad*", "inversión", "inversiones", "competencia",
-                     "eficien*", "iniciativa*", "libertad", "moderniza*",
-                     "subsidiari*", "empresarios")))
-```
 
 **Expresiones compuestas** usadas en el preprocesamiento: ****poner
 

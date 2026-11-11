@@ -304,6 +304,40 @@ for (m in marcos) {
                    rank_rob  = rank(-tab_rob[[m]])))
   cat("Spearman:", round(cor(tab_gob[[m]], tab_rob[[m]], method = "spearman"), 3), "\n")
 }
+
+## # ---- Prueba de robustez (Cuentas 1990-2026) -----------------------------
+set.seed(2026)
+slda_rob <- textmodel_seededlda(dtm_1990_2026, dictionary = dic, residual = 8)
+terms(slda_rob, 15)[, marcos]
+
+dtm_cuentas_match <- dfm_subset(dtm_1990_2026, ntoken(dtm_1990_2026) > 0)
+set.seed(2026)
+pred_rob <- textmodel_lda(dtm_cuentas_match, model = slda_rob, update_model = FALSE)$theta
+
+pred_rob_df <- as.data.frame(pred_rob[, marcos])
+pred_rob_df$gobierno <- docvars(dtm_1990_2026, "gobierno")[match(rownames(pred_rob), docnames(dtm_1990_2026))]
+tab_rob <- pred_rob_df |>
+  group_by(gobierno) |>
+  summarise(across(all_of(marcos), mean)) |>
+  mutate(gobierno = factor(gobierno, levels = orden_gob)) |>
+  arrange(gobierno)
+tab_rob
+
+# ---- Guardar tabla comparativa de robustez ------------------------------
+tabla_robustez <- data.frame(
+  gobierno = tab_gob_propio$gobierno,
+  
+  rank_base_transf = rank(-tab_gob_propio$transformacion),
+  rank_rob_transf  = rank(-tab_rob$transformacion),
+  
+  rank_base_orden  = rank(-tab_gob_propio$orden),
+  rank_rob_orden   = rank(-tab_rob$orden),
+  
+  rank_base_mercad = rank(-tab_gob_propio$mercado),
+  rank_rob_mercad  = rank(-tab_rob$mercado)
+)
+
+saveRDS(tabla_robustez, file = "tablas/tabla_robustez.rds")
  
  ## ---- 6.5 Precisión de la codificación manual ----
 for (arch in c("validacion_20_codificada.csv", "validacion_20_orden_codificada.csv")) {
