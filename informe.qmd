@@ -5,7 +5,7 @@ author:
   - name: Elena Yañez Rodríguez
 date: today
 lang: "es"
-fontsize: 11pt
+fontsize: 10.5pt
 format:
   pdf:
     toc: false
