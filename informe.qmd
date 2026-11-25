@@ -311,9 +311,7 @@ No contamos evidencia de que el lenguaje de Allende haya vuelto a las cuentas p�
 
 Respecto a los límites del corpus, se presentan tres principales. En primer lugar, respecto al corpus de Allende y Pinochet, una dificultad es que los discursos de este último no abarcan todo el periodo en el que estuvo en el poder; por tanto, captura el discurso más temprano de Pinochet, previo a acontecimientos importantes de la dictadura como la crisis económica de 1982 y las protestas nacionales al año siguiente. Junto con esto, todos sus discursos corresponden al 11 de septiembre, por lo que están en un contexto que responde a una conmemoración del golpe de Estado. Debido a esto, su discurso puede ser distinto al resto de sus intervenciones, por ejemplo, dándole más peso a aspectos como la justificación del golpe de estado o la legitimación del régimen militar. En tercer lugar, respecto al corpus de 1990-2026 solo se cuenta con una cuenta publica del presidente Jose Antonio Kast, debido a que es su primer año de gobierno. Esta limitación impide observar la evolución discursiva a lo largo de su mandato y restringe el análisis al comienzo de su mandato, cuyo contenido tiende a estar marcado por la coyuntura del cambio de mando.
 
-Respecto a aspectos eticos
-
-
+Respecto a los aspectos éticos, al tratarse de textos disponibles de manera pública, no existen dificultades en cuanto a la privacidad de la información. Junto con ello, el código en R se adjunta al presente documento con el fin de resguardar la reproducibilidad del análisis; además, en los anexos se informan la semilla, los residuales, las versiones de software (*sessionInfo*) y el diccionario completo utilizado en el modelo.
 
 # Referencias
 
