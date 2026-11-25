@@ -332,7 +332,7 @@ Roldán, Y. (2011). Salvador Allende: los argumentos del triunfo y los argumento
 
 **Semilla y parámetros.** `set.seed(2026)`; `residual = 15` (robustez: `residual = 8`); paquetes `quanteda` 4.5.1 y `seededlda` 1.4.4.
 
-**Expresiones compuestas** usadas en el preprocesamiento: "unidad popular", "gobierno popular", "junta de gobierno" y "área de propiedad social". FLTAN LAS DEMAS
+**Expresiones compuestas**: "derechos humanos", "crimen organizado", "fuerzas armadas", "seguridad social", "seguridad pública", "seguridad ciudadana", "derechos sociales", "clase media", "medio ambiente", "cambio climático", "crisis climática", "pueblos originarios", "pueblos indígenas", "estallido social", "estado de derecho", "orden público", "detenidos desaparecidos", "protección social", "crecimiento económico", "nueva constitución", "libre mercado", "unidad popular", "gobierno popular", "junta de gobierno" y "área de propiedad social".
 
 **Diccionario final completo.**
 
