@@ -53,42 +53,7 @@ textos <- as.character(corp_par_1990_2026)[rownames(pred_cuentas)]
 
 **Hipótesis 2.** Las cuentas de los presidentes de derecha se asemejan al lenguaje de Pinochet, en particular la de Kast, cuya cuenta de 2026 se organizó en torno al orden y la seguridad (Kast, 2026; Masalleras, 2026). Es una hipótesis frágil, pues Kast tiene una sola cuenta (223 párrafos).
 
-**Método y diccionario.** Usamos un modelo de tópicos semillado (seeded LDA), que permite contrastar un constructo teórico con los patrones que descubre el modelo (Hurtado Bodell et al., 2026, pp. 11-12). Empleamos el diccionario de las sesiones 9 y 10 sin modificar palabras, con tres tópicos (`transformacion`, `orden` y `mercado`; ver Anexo). El único cambio fue de preprocesamiento, unimos como expresiones compuestas "unidad popular", "gobierno popular", "junta de gobierno" y "área de propiedad social", porque sin esa unión las semillas multipalabra no existían en la matriz y tenían cero apariciones. Son los términos propios del vocabulario político de 1970-1973 incluidos en el diccionario. La unidad de análisis es el párrafo (se eliminaron los de menos de 10 palabras), con `residual = 15` y semilla 2026.
-```{r}
-#| tbl-cap: "Diccionario utilizado"
-
-dic <- dictionary(list(
-  transformacion = c("socialis*", "revoluc*", "capitalis*", "explota*", "clase",
-                     "clases", "monopol*", "imperialis*", "latifund*", "oligarq*",
-                     "liberación", "nacionalización", "transformaci*",
-                     "unidad_popular", "gobierno_popular", "área_de_propiedad_social"),
-  orden          = c("patria", "orden", "seguridad", "fuerzas_armadas",
-                     "junta_de_gobierno", "reconstrucción", "caos", "disciplina",
-                     "soberan*", "autoridad*", "subversi*", "marxis*"),
-  mercado        = c("mercado*", "privad*", "inversión", "inversiones", "competencia",
-                     "eficien*", "iniciativa*", "libertad", "moderniza*",
-                     "subsidiari*", "empresarios")))
-marcos <- names(dic)
-
-# 1. Convertir el diccionario a un data frame colapsando los términos con comas
-tab_dic_compacto <- data.frame(
-  Marco = names(dic),
-  Terminos = sapply(dic, function(x) paste(as.character(x), collapse = ", "))
-)
-
-# 2. Renderizar con kableExtra y anchos fijos para que baje de línea ordenadamente
-kable(
-  tab_dic_compacto,
-  col.names = c("Marco Temático", "Términos del Diccionario"),
-  row.names = FALSE,
-  digits = 3,
-  booktabs = TRUE
-) |>
-  kable_styling(latex_options = c("striped", "hold_position"), font_size = 9) |>
-  column_spec(1, width = "3.5cm") |>  # Columna del marco más angosta
-  column_spec(2, width = "10.5cm")    # Columna de términos con espacio amplio
-```
-
+**Método y diccionario.** Usamos un modelo de tópicos semillado (seeded LDA), que permite contrastar un constructo teórico con los patrones que descubre el modelo (Hurtado Bodell et al., 2026, pp. 11-12). Empleamos el diccionario de las sesiones 9 y 10 sin modificar palabras, con tres tópicos (`transformacion`, `orden` y `mercado`; ver Anexo). El único cambio fue de preprocesamiento, unimos como expresiones compuestas "unidad popular", "gobierno popular", "junta de gobierno" y "área de propiedad social", porque sin esa unión las semillas multipalabra no existían en la matriz y tenían cero apariciones. Son los términos propios del vocabulario político de 1970-1973 incluidos en el diccionario. La unidad de análisis es el párrafo (se eliminaron los de menos de 10 palabras), con `residual = 15` y semilla 2026. El diccionario se encuentra en Anexos.
 
 # Medición integrada
 
@@ -277,7 +242,7 @@ kable(
 
 # Coocurrencias
 
-![Red de coocurrencias de "seguridad" en el gobierno de Aylwin.](figuras/red_Aylwin.png){width=48%} ![Red de coocurrencias de "seguridad" en el gobierno de Boric.](figuras/red_Boric.png){width=48%}
+![Red de coocurrencias de "seguridad" en el gobierno de Aylwin.](figuras/red_Aylwin.png){width=35%} ![Red de coocurrencias de "seguridad" en el gobierno de Boric.](figuras/red_Boric.png){width=35%}
 
 ```{r}
 #| label: tbl-vecinos-seguridad
